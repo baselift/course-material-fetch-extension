@@ -176,6 +176,12 @@ importers:
         specifier: ^9.5.2
         version: 9.5.4(typescript@5.9.3)(webpack@5.94.0(@swc/core@1.13.5))
 
+  packages/definitions:
+    devDependencies:
+      '@extension/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+
   packages/dev-utils:
     devDependencies:
       '@extension/shared':
@@ -388,6 +394,9 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ui
     devDependencies:
+      '@extension/definitions':
+        specifier: workspace:*
+        version: link:../../packages/definitions
       '@extension/tailwindcss-config':
         specifier: workspace:*
         version: link:../../packages/tailwindcss-config

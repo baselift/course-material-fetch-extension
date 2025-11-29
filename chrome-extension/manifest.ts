@@ -36,6 +36,7 @@ const manifest = {
   background: {
     service_worker: 'background.js',
     type: 'module',
+    scripts: ['background.js'],
   },
   action: {
     default_popup: 'popup/index.html',
