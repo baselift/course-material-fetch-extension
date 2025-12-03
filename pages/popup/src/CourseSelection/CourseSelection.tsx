@@ -1,6 +1,6 @@
-import { Pages } from '@extension/definitions';
+import { createDownloadMessage, Dataform, Folder, Pages } from '@extension/shared';
 import { useRef, useState } from 'react';
-import type { Course } from '@extension/definitions';
+import type { Course } from '@extension/shared';
 import type { ChangeEventHandler } from 'react';
 import './CourseSelection.css';
 
@@ -33,7 +33,7 @@ const CourseSelection = ({ courses }: { courses: Array<Course> }) => {
   const handleSelectAll = () => {
     const newSelectAll = !selectAll.current;
     selectAll.current = newSelectAll;
-    setCheckedState(checkedState => checkedState.map(() => (newSelectAll ? true : false)));
+    setCheckedState(checkedState => checkedState.map(() => newSelectAll));
   };
 
   const handleSelect = (targetIndex: number) =>
@@ -44,7 +44,16 @@ const CourseSelection = ({ courses }: { courses: Array<Course> }) => {
       if (checkedState[i]) {
         const course = courses[i];
         const page: Pages = new Pages(course.courseId);
-        console.log(await page.getSectionItems());
+        const items = await page.getSectionItems();
+        if (items) {
+          const dataforms = Dataform.fromItems(...items);
+          const folder = new Folder('pages', ...dataforms);
+          const u8Data = await folder.getZippedData();
+          const blob = new Blob([new Uint8Array(u8Data)], { type: 'application/zip' });
+          const url = window.URL.createObjectURL(blob);
+          await chrome.runtime.sendMessage(createDownloadMessage(url));
+          window.URL.revokeObjectURL(url);
+        }
       }
     }
   };

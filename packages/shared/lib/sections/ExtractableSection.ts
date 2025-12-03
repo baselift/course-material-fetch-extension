@@ -1,4 +1,4 @@
-import type { Item, Nullable } from '../common.js';
+import type { Item, Nullable } from '../utils/types.js';
 
 export default abstract class ExtractableSection {
   /**

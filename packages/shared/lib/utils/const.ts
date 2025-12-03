@@ -23,3 +23,6 @@ export const COLORS = {
   BgCyan: '\x1b[46m',
   BgWhite: '\x1b[47m',
 } as const;
+
+export const QUERCUS_BASE_URL = 'https://q.utoronto.ca';
+export const QUERCUS_BASE_API_ENDPOINT = `${QUERCUS_BASE_URL}/api/v1`;

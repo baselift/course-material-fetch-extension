@@ -1,6 +1,6 @@
 import APIAccessibleSection from './APIAccessibleSection.js';
 import QuercusPage from '../dataforms/QuercusPage.js';
-import type { Item, Nullable } from '../common.js';
+import type { Item, Nullable } from '../utils/types.js';
 
 interface RawPageData {
   body?: Nullable<string>;
@@ -26,7 +26,7 @@ export default class Pages extends APIAccessibleSection {
   }
 
   async getSectionItems(): Promise<Nullable<Array<Item>>> {
-    const response = await fetch(this.assignedAPIEndpoint({ 'include[]': 'body' }));
+    const response = await fetch(this.assignedAPIEndpoint({ 'include[]': 'body', per_page: '30' }));
     if (response.ok === false) {
       return null;
     }

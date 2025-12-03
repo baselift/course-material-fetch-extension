@@ -1,9 +1,9 @@
 import CourseSelection from './CourseSelection/CourseSelection';
 import TabError from './errors/TabError';
-import { QUERCUS_BASE_API_ENDPOINT, QUERCUS_BASE_URL } from '@extension/definitions';
+import { QUERCUS_BASE_API_ENDPOINT, QUERCUS_BASE_URL } from '@extension/shared';
 import '@src/index.css';
 import { createRoot } from 'react-dom/client';
-import type { Course, Nullable } from '@extension/definitions';
+import type { Course, Nullable } from '@extension/shared';
 
 interface RawCourse {
   account_id: Nullable<string>;
@@ -54,7 +54,7 @@ const init = async () => {
     throw new Error('Can not find #app-container');
   }
   const root = createRoot(appContainer);
-
+  // TODO: Check when user switches away from quercus and update
   const queryOptions = { active: true, lastFocusedWindow: true };
   const [tab] = await chrome.tabs.query(queryOptions);
   if (tab.url?.startsWith(QUERCUS_BASE_URL)) {
