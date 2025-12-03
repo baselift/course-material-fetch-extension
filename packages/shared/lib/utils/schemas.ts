@@ -1,7 +1,7 @@
 import * as z from 'zod';
 import type { DownloadMessage } from './types.ts';
 
-const DownloadType = 'download';
+export const DownloadType = 'download';
 export const DownloadMessageSchema = z.object({
   type: z.literal(DownloadType),
   url: z.string(),

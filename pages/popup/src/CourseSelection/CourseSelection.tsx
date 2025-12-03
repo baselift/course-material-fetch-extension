@@ -40,22 +40,26 @@ const CourseSelection = ({ courses }: { courses: Array<Course> }) => {
     setCheckedState(checkedState => checkedState.map((checked, index) => (index === targetIndex ? !checked : checked)));
 
   const handleSubmit = async () => {
+    const coursePageFolders: Folder[] = [];
     for (let i = 0; i < checkedState.length; i++) {
       if (checkedState[i]) {
         const course = courses[i];
-        const page: Pages = new Pages(course.courseId);
+        const courseId = course.courseId;
+        const page: Pages = new Pages(courseId);
         const items = await page.getSectionItems();
         if (items) {
           const dataforms = Dataform.fromItems(...items);
-          const folder = new Folder('pages', ...dataforms);
-          const u8Data = await folder.getZippedData();
-          const blob = new Blob([new Uint8Array(u8Data)], { type: 'application/zip' });
-          const url = window.URL.createObjectURL(blob);
-          await chrome.runtime.sendMessage(createDownloadMessage(url));
-          window.URL.revokeObjectURL(url);
+          const folder = new Folder(courseId.toString(), ...dataforms);
+          coursePageFolders.push(folder);
         }
       }
     }
+    const pagesFolder = new Folder('pages', ...coursePageFolders);
+    const u8Data = await pagesFolder.getZippedData();
+    const blob = new Blob([new Uint8Array(u8Data)], { type: 'application/zip' });
+    const url = window.URL.createObjectURL(blob);
+    await chrome.runtime.sendMessage(createDownloadMessage(url));
+    window.URL.revokeObjectURL(url);
   };
 
   return (
