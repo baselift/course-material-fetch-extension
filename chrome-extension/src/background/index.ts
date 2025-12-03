@@ -1,5 +1,5 @@
 import 'webextension-polyfill';
-import { ExtensionMessageSchema } from '@extension/shared';
+import { DownloadType, ExtensionMessageSchema } from '@extension/shared';
 
 chrome.runtime.onMessage.addListener(async (msg, sender) => {
   const parsedMsg = ExtensionMessageSchema.safeParse(msg);
@@ -7,7 +7,7 @@ chrome.runtime.onMessage.addListener(async (msg, sender) => {
     const msg = parsedMsg.data;
     const type = msg.type;
     switch (type) {
-      case 'download': {
+      case DownloadType: {
         await new Promise<void>(resolve => {
           chrome.downloads.onChanged.addListener(function revokeAfterCompletion(delta) {
             const state = delta.state;
