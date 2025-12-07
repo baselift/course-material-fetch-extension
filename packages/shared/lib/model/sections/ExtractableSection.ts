@@ -1,5 +1,5 @@
 import { Folder, Dataform } from '../dataforms/index.js';
-import type { Item, Nullable } from '../utils/common/types.js';
+import type { Item, Nullable } from '../../utils/common/types.js';
 
 /**
  * Represents a section of extractable data for a Quercus course. For example, the Modules section, Pages section etc...

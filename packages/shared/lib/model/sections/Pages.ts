@@ -1,6 +1,6 @@
 import APIAccessibleSection from './APIAccessibleSection.js';
 import QuercusPage from '../dataforms/QuercusPage.js';
-import type { Item, Nullable } from '../utils/common/types.js';
+import type { Item, Nullable } from '../../utils/common/types.js';
 
 interface RawPageData {
   body?: Nullable<string>;

@@ -1,5 +1,5 @@
 import type { COLORS } from './const.js';
-import type Dataform from '../../dataforms/Dataform.js';
+import type Dataform from '../../model/dataforms/Dataform.js';
 import type { TupleToUnion } from 'type-fest';
 
 export type * from 'type-fest';

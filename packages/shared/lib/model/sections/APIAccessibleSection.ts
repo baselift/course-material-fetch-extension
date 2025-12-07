@@ -1,5 +1,5 @@
 import ExtractableSection from './ExtractableSection.js';
-import { QUERCUS_BASE_API_ENDPOINT } from '../utils/common/const.js';
+import { QUERCUS_BASE_API_ENDPOINT } from '../../utils/common/const.js';
 
 export default abstract class APIAccessibleSection extends ExtractableSection {
   constructor(courseId: number, sectionName: string) {
