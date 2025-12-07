@@ -1,4 +1,4 @@
-import type { Item } from '../utils/types.js';
+import type { Item } from '../utils/common/types.js';
 import type { AsyncZippable } from 'fflate';
 
 export default abstract class Dataform {

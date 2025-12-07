@@ -1,5 +1,5 @@
-import { COLORS } from './const.js';
-import type { ColorType, ValueOf } from './types.js';
+import { COLORS } from './common/const.js';
+import type { ColorType, ValueOf } from './common/types.js';
 
 export const colorfulLog = (message: string, type: ColorType) => {
   let color: ValueOf<typeof COLORS>;

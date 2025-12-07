@@ -1,5 +1,5 @@
 import APIAccessibleSection from './APIAccessibleSection.js';
-import type { Nullable, Item } from '../utils/types.js';
+import type { Nullable, Item } from '../utils/common/types.js';
 
 interface RawModuleData {
   temp: string;

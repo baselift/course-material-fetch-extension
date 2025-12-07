@@ -1,4 +1,6 @@
-import { createDownloadMessage, Dataform, Folder, Pages } from '@extension/shared';
+import 'webextension-polyfill';
+import { getDataFromCourses } from './utils';
+import { createMessage, DownloadProgressSchema, DownloadType } from '@extension/shared';
 import { useRef, useState } from 'react';
 import type { Course } from '@extension/shared';
 import type { ChangeEventHandler } from 'react';
@@ -26,8 +28,12 @@ const CourseItem = ({
   );
 };
 
+const DEFAULT_STATUS = 'Scrape!';
+
 const CourseSelection = ({ courses }: { courses: Array<Course> }) => {
   const [checkedState, setCheckedState] = useState<Array<boolean>>(new Array(courses.length).fill(false));
+  const [progress, setProgress] = useState(0);
+  const [statusMessage, setStatusMessage] = useState(DEFAULT_STATUS);
   const selectAll = useRef(false);
 
   const handleSelectAll = () => {
@@ -40,26 +46,31 @@ const CourseSelection = ({ courses }: { courses: Array<Course> }) => {
     setCheckedState(checkedState => checkedState.map((checked, index) => (index === targetIndex ? !checked : checked)));
 
   const handleSubmit = async () => {
-    const coursePageFolders: Folder[] = [];
-    for (let i = 0; i < checkedState.length; i++) {
-      if (checkedState[i]) {
-        const course = courses[i];
-        const courseId = course.courseId;
-        const page: Pages = new Pages(courseId);
-        const items = await page.getSectionItems();
-        if (items) {
-          const dataforms = Dataform.fromItems(...items);
-          const folder = new Folder(courseId.toString(), ...dataforms);
-          coursePageFolders.push(folder);
+    const filteredCourses = courses.filter((_course, index) => checkedState[index]);
+    if (filteredCourses.length > 0) {
+      setStatusMessage('Fetching...');
+      const dataFolder = await getDataFromCourses(filteredCourses);
+      const blob = await dataFolder.toBlob();
+      const url = window.URL.createObjectURL(blob);
+      const port = chrome.runtime.connect();
+      port.onMessage.addListener(msg => {
+        const parsedMsg = DownloadProgressSchema.safeParse(msg);
+        if (parsedMsg.success) {
+          const msg = parsedMsg.data;
+          setProgress(msg.progress);
         }
-      }
+      });
+      port.onDisconnect.addListener(() => {
+        window.URL.revokeObjectURL(url);
+        setProgress(100);
+        setTimeout(() => {
+          setProgress(0);
+          setStatusMessage(DEFAULT_STATUS);
+        }, 500);
+      });
+      port.postMessage(createMessage({ type: DownloadType, url: url }));
+      setStatusMessage('Downloading...');
     }
-    const pagesFolder = new Folder('pages', ...coursePageFolders);
-    const u8Data = await pagesFolder.getZippedData();
-    const blob = new Blob([new Uint8Array(u8Data)], { type: 'application/zip' });
-    const url = window.URL.createObjectURL(blob);
-    await chrome.runtime.sendMessage(createDownloadMessage(url));
-    window.URL.revokeObjectURL(url);
   };
 
   return (
@@ -79,8 +90,14 @@ const CourseSelection = ({ courses }: { courses: Array<Course> }) => {
         ))}
       </div>
       <div className="grow-0">
-        <button id="submitBttn" className="w-full border-[0.1rem] border-solid bg-[#ededed]" onClick={handleSubmit}>
-          Scrape!
+        <button
+          id="submitBttn"
+          className={`w-full border-[0.1rem] border-solid`}
+          style={{
+            background: `linear-gradient(to right, green ${progress}%, #ededed ${progress}% ${100 - progress}%`,
+          }}
+          onClick={handleSubmit}>
+          {statusMessage}
         </button>
       </div>
     </section>

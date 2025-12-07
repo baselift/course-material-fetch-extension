@@ -1,14 +1,9 @@
 import ExtractableSection from './ExtractableSection.js';
-import { QUERCUS_BASE_API_ENDPOINT } from '../utils/const.js';
+import { QUERCUS_BASE_API_ENDPOINT } from '../utils/common/const.js';
 
 export default abstract class APIAccessibleSection extends ExtractableSection {
-  private courseId: number;
-  private sectionName: string;
-
   constructor(courseId: number, sectionName: string) {
-    super();
-    this.courseId = courseId;
-    this.sectionName = sectionName;
+    super(courseId, sectionName);
   }
 
   public assignedAPIEndpoint(queryParams: Record<string, string>): string {

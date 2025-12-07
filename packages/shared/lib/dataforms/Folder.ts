@@ -29,6 +29,11 @@ export default class Folder extends Dataform {
     });
   }
 
+  async toBlob(): Promise<Blob> {
+    const zippedData = await this.getZippedData();
+    return new Blob([new Uint8Array(zippedData)], { type: 'application/zip' });
+  }
+
   toZippable(): AsyncZippable {
     const resultZippable = this.getZippableFromDataforms(...this.items);
     return {
