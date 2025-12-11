@@ -1,19 +1,16 @@
-import { Pages, Folder } from '@extension/shared';
+import { Folder } from '@extension/shared';
 import type { Course } from '@extension/shared';
 
 export const getDataFromCourses = async (courses: Course[]) => {
-  const coursePageFolders: Folder[] = [];
+  const courseFolders: Folder[] = [];
 
   for (const course of courses) {
-    const id = course.courseId;
-    const page: Pages = new Pages(id);
-    const dataFolder = await page.getDataFolder();
-    if (dataFolder) {
-      coursePageFolders.push(dataFolder);
+    const courseFolder = await course.getDataFolder();
+    if (courseFolder) {
+      courseFolders.push(courseFolder);
     }
   }
 
-  const pagesFolder = new Folder('pages', ...coursePageFolders);
-  const dataFolder = new Folder('data', pagesFolder);
+  const dataFolder = new Folder('data', ...courseFolders);
   return dataFolder;
 };

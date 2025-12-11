@@ -1,5 +1,4 @@
 import type { COLORS } from './const.js';
-import type Dataform from '../../model/dataforms/Dataform.js';
 import type { TupleToUnion } from 'type-fest';
 
 export type * from 'type-fest';
@@ -20,15 +19,5 @@ export type CompatibilityType = {
 };
 
 export type ManifestType = Omit<chrome.runtime.ManifestV3, keyof CompatibilityType> & CompatibilityType;
-
-export interface Course {
-  courseName: string;
-  courseId: number;
-}
-
-export interface Item {
-  id: number;
-  type: Dataform;
-}
 
 export type Nullable<T> = null | T;

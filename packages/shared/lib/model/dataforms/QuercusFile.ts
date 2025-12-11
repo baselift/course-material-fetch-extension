@@ -1,11 +1,11 @@
-import VirtualDataform from './VirtualDataform.js';
+import QuercusDataform from './QuercusDataform.js';
 import type { AsyncZippable } from 'fflate';
 
-export default class QuercusFile extends VirtualDataform {
+export default class QuercusFile extends QuercusDataform {
   protected ext: string;
 
-  constructor(fileLink: string, fileName: string, ext: string) {
-    super(fileLink, fileName);
+  constructor(id: string, fileLink: string, fileName: string, ext: string) {
+    super(fileLink, fileName, id);
     this.ext = ext;
   }
 

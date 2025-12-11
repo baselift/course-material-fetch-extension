@@ -1,12 +1,12 @@
-import VirtualDataform from './VirtualDataform.js';
+import QuercusDataform from './QuercusDataform.js';
 import { strToU8 } from 'fflate';
 import type { AsyncZippable } from 'fflate';
 
-export default class QuercusPage extends VirtualDataform {
+export default class QuercusPage extends QuercusDataform {
   private body: string;
 
-  constructor(pageLink: string, pageName: string, body: string) {
-    super(pageLink, pageName);
+  constructor(id: string, pageLink: string, pageName: string, body: string) {
+    super(pageLink, pageName, id);
     this.body = body;
   }
 

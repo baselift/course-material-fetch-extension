@@ -6,6 +6,12 @@ import type { Course } from '@extension/shared';
 import type { ChangeEventHandler } from 'react';
 import './CourseSelection.css';
 
+enum ScrapeStatus {
+  DEFAULT = 'Scrape!',
+  FETCH = 'Fetching...',
+  DOWNLOAD = 'Downloading...',
+}
+
 const CourseItem = ({
   name,
   id,
@@ -28,12 +34,10 @@ const CourseItem = ({
   );
 };
 
-const DEFAULT_STATUS = 'Scrape!';
-
 const CourseSelection = ({ courses }: { courses: Array<Course> }) => {
   const [checkedState, setCheckedState] = useState<Array<boolean>>(new Array(courses.length).fill(false));
   const [progress, setProgress] = useState(0);
-  const [statusMessage, setStatusMessage] = useState(DEFAULT_STATUS);
+  const [statusMessage, setStatusMessage] = useState(ScrapeStatus.DEFAULT);
   const selectAll = useRef(false);
 
   const handleSelectAll = () => {
@@ -48,7 +52,7 @@ const CourseSelection = ({ courses }: { courses: Array<Course> }) => {
   const handleSubmit = async () => {
     const filteredCourses = courses.filter((_course, index) => checkedState[index]);
     if (filteredCourses.length > 0) {
-      setStatusMessage('Fetching...');
+      setStatusMessage(ScrapeStatus.FETCH);
       const dataFolder = await getDataFromCourses(filteredCourses);
       const blob = await dataFolder.toBlob();
       const url = window.URL.createObjectURL(blob);
@@ -65,11 +69,11 @@ const CourseSelection = ({ courses }: { courses: Array<Course> }) => {
         setProgress(100);
         setTimeout(() => {
           setProgress(0);
-          setStatusMessage(DEFAULT_STATUS);
-        }, 500);
+          setStatusMessage(ScrapeStatus.DEFAULT);
+        }, 100);
       });
       port.postMessage(createMessage({ type: DownloadType, url: url }));
-      setStatusMessage('Downloading...');
+      setStatusMessage(ScrapeStatus.DOWNLOAD);
     }
   };
 
@@ -82,8 +86,8 @@ const CourseSelection = ({ courses }: { courses: Array<Course> }) => {
       <div className="w-full grow basis-auto overflow-y-auto">
         {courses.map((course, index) => (
           <CourseItem
-            name={course.courseName}
-            id={course.courseId}
+            name={course.getSectionName()}
+            id={course.getCourseId()}
             checked={checkedState[index]}
             onCheckboxUpdate={() => handleSelect(index)}
           />

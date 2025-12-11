@@ -1,16 +1,17 @@
-import APIAccessibleSection from './APIAccessibleSection.js';
-import type { Nullable, Item } from '../../utils/common/types.js';
+import APIAccessibleCourseSection from './APIAccessibleCourseSection.js';
+import type { Nullable } from '../../utils/common/types.js';
+import type Dataform from '../dataforms/Dataform.js';
 
 interface RawModuleData {
   temp: string;
 }
 
-export default class Modules extends APIAccessibleSection {
+export default class Modules extends APIAccessibleCourseSection {
   constructor(courseId: number) {
     super(courseId, 'modules');
   }
 
-  async getSectionItems(): Promise<Nullable<Array<Item>>> {
+  async getSectionItems(): Promise<Nullable<Array<Dataform>>> {
     const response = await fetch(this.assignedAPIEndpoint({}));
     if (response.ok === false) {
       return null;

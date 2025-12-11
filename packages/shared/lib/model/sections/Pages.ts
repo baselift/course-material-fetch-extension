@@ -1,6 +1,7 @@
-import APIAccessibleSection from './APIAccessibleSection.js';
+import APIAccessibleCourseSection from './APIAccessibleCourseSection.js';
 import QuercusPage from '../dataforms/QuercusPage.js';
-import type { Item, Nullable } from '../../utils/common/types.js';
+import type { Nullable } from '../../utils/common/types.js';
+import type Dataform from '../dataforms/Dataform.js';
 
 interface RawPageData {
   body?: Nullable<string>;
@@ -20,19 +21,19 @@ interface RawPageData {
   url: Nullable<string>;
 }
 
-export default class Pages extends APIAccessibleSection {
+export default class Pages extends APIAccessibleCourseSection {
   constructor(courseId: number) {
     super(courseId, 'pages');
   }
 
-  async getSectionItems(): Promise<Nullable<Array<Item>>> {
+  async getSectionItems(): Promise<Nullable<Array<Dataform>>> {
     const response = await fetch(this.assignedAPIEndpoint({ 'include[]': 'body', per_page: '30' }));
     if (response.ok === false) {
       return null;
     }
 
     const responseData: Array<RawPageData> = await response.json();
-    const sectionItemArray: Array<Item> = [];
+    const sectionItemArray: Array<Dataform> = [];
 
     // check if responseData is iterable (avoid possible edge cases)
     if (responseData?.[Symbol.iterator]) {
@@ -43,10 +44,7 @@ export default class Pages extends APIAccessibleSection {
         const title = pageData.title;
 
         if (body != null && page_id != null && html_url != null && title != null) {
-          sectionItemArray.push({
-            id: page_id,
-            type: new QuercusPage(html_url, title, body),
-          });
+          sectionItemArray.push(new QuercusPage(page_id.toString(), html_url, title, body));
         }
       }
       return sectionItemArray;

@@ -1,9 +1,9 @@
 import CourseSelection from './CourseSelection/CourseSelection';
 import TabError from './errors/TabError';
-import { QUERCUS_BASE_API_ENDPOINT, QUERCUS_BASE_URL } from '@extension/shared';
+import { QUERCUS_BASE_API_ENDPOINT, QUERCUS_BASE_URL, Course } from '@extension/shared';
 import '@src/index.css';
 import { createRoot } from 'react-dom/client';
-import type { Course, Nullable } from '@extension/shared';
+import type { Nullable } from '@extension/shared';
 
 interface RawCourse {
   account_id: Nullable<string>;
@@ -43,7 +43,7 @@ interface RawCourse {
 
 const mapResponseToCourses = (obj: RawCourse): Course | [] => {
   if (!obj.access_restricted_by_date && obj.name !== null && obj.id !== null) {
-    return { courseName: obj.name, courseId: obj.id };
+    return new Course(obj.id, obj.name);
   }
   return []; // means that this entry will be removed in the new array
 };
