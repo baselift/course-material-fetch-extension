@@ -12,7 +12,7 @@ export const DownloadMessageSchema = z.object({
 });
 export const DownloadProgressSchema = z.object({
   type: z.literal(DownloadProgressType),
-  progress: z.number(),
+  progress: z.number().gte(0).lte(100),
 });
 export const ExtensionMessageSchema = z.discriminatedUnion(TypeKey, [DownloadMessageSchema, DownloadProgressSchema]);
 export type ExtensionMessage = z.Infer<typeof ExtensionMessageSchema>;
